@@ -31,14 +31,16 @@ for k, v in lang_name_to_code.items():
     lang_code_to_name[v] = k
 
 with st.form(key='LangCodes'):
-    c1, c2 = st.columns(2)
+    c1, c2, c3 = st.columns(3)
     with c1:
         input_lang_code = st.selectbox('Please Select Input Language', sorted(lang_name_to_code.keys()))
 
-    with c2:
+    with c3:
         output_lang_code = st.selectbox('Please Select Output Language', sorted(lang_name_to_code.keys()))
 
-    submitButton = st.form_submit_button(label='Submit')
+    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+    with col4:
+        submitButton = st.form_submit_button(label='Submit')
 
 input_text = st.text_input("Input Text", key = "input_text")
 
