@@ -36,6 +36,10 @@ with st.form(key='LangCodes'):
         input_lang_code = st.selectbox('Please Select Input Language', sorted(lang_name_to_code.keys()))
 
     with c2:
-        input_lang_code = st.selectbox('Please Select Output Language', sorted(lang_name_to_code.keys()))
+        output_lang_code = st.selectbox('Please Select Output Language', sorted(lang_name_to_code.keys()))
 
     submitButton = st.form_submit_button(label='Submit')
+
+input_text = st.text_input("Input Text", key = "input_text")
+
+st.subheader(f'Your Input : {input_text}, will be translated from {input_lang_code} to {output_lang_code}')
