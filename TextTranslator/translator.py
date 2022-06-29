@@ -3,6 +3,8 @@ from transformers import MBartForConditionalGeneration, MBart50TokenizerFast
 model = MBartForConditionalGeneration.from_pretrained("facebook/mbart-large-50-many-to-many-mmt")
 tokenizer = MBart50TokenizerFast.from_pretrained("facebook/mbart-large-50-many-to-many-mmt")
 
+PATH = r'C:\Users\dell\Desktop\Plotly\Streamlit\model'
+
 # Define Mappings
 lang_name_to_code = {'Arabic': 'ar_AR',
                      'Czech': 'cs_CZ',
@@ -48,18 +50,31 @@ class Translator():
 
     # Define Translation Function
     def translate(self, input_sentence, input_lang_code, output_lang_code):
+        lm, lt = self.load_model()
 
         # Assign Input Language to the tokenizer
-        self.tokenizer.src_lang = input_lang_code
+        lt.src_lang = input_lang_code
 
         # Encode Input Sentence
-        encoded_input = self.tokenizer(input_sentence, return_tensors="pt")
+        encoded_input = lt(input_sentence, return_tensors="pt")
 
         # Generate Output Tokens
-        generated_tokens = self.model.generate(**encoded_input,
-                                               forced_bos_token_id=self.tokenizer.lang_code_to_id[output_lang_code])
+        generated_tokens = lm.generate(**encoded_input,
+                                       forced_bos_token_id=lt.lang_code_to_id[output_lang_code])
 
         # Convert Tokens to Sequence
-        output_sentence = self.tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
+        output_sentence = lt.batch_decode(generated_tokens, skip_special_tokens=True)
 
         return output_sentence
+
+    def save_model(self):
+        # You can then save them locally via:
+        self.tokenizer.save_pretrained(PATH)
+        self.model.save_pretrained(PATH)
+        print('Saved')
+
+    def load_model(self):
+        local_tokenizer = MBart50TokenizerFast.from_pretrained(PATH)
+        local_model = MBartForConditionalGeneration.from_pretrained(PATH)
+        print('Loaded')
+        return local_model, local_tokenizer
