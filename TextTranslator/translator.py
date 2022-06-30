@@ -3,7 +3,7 @@ from transformers import MBartForConditionalGeneration, MBart50TokenizerFast
 model = MBartForConditionalGeneration.from_pretrained("facebook/mbart-large-50-many-to-many-mmt")
 tokenizer = MBart50TokenizerFast.from_pretrained("facebook/mbart-large-50-many-to-many-mmt")
 
-PATH = r'C:\Users\dell\Desktop\Plotly\Streamlit\model'
+PATH = <MODEL_PATH_GOES_HERE>
 
 # Define Mappings
 lang_name_to_code = {'Arabic': 'ar_AR',
@@ -47,6 +47,12 @@ class Translator():
 
     def get_lang_code_from_name(self, lc):
         return self.lang_name_to_code[lc]
+
+    def get_lang_code_to_name(self):
+        return self.lang_code_to_name
+
+    def get_lang_name_to_code(self):
+        return self.lang_name_to_code
 
     # Define Translation Function
     def translate(self, input_sentence, input_lang_code, output_lang_code):
