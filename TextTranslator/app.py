@@ -1,47 +1,36 @@
 import streamlit as st
+import translator
 
-lang_name_to_code = {'Arabic': 'ar_AR',
-                     'Czech': 'cs_CZ',
-                     'German': 'de_DE',
-                     'English': 'en_XX',
-                     'Spanish': 'es_XX',
-                     'Estonian': 'et_EE',
-                     'Finnish': 'fi_FI',
-                     'French': 'fr_XX',
-                     'Gujarati': 'gu_IN',
-                     'Hindi': 'hi_IN',
-                     'Italian': 'it_IT',
-                     'Japanese': 'ja_XX',
-                     'Kazakh': 'kk_KZ',
-                     'Korean': 'ko_KR',
-                     'Lithuanian': 'lt_LT',
-                     'Latvian': 'lv_LV',
-                     'Burmese': 'my_MM',
-                     'Nepali': 'ne_NP',
-                     'Dutch': 'nl_XX',
-                     'Romanian': 'ro_RO',
-                     'Russian': 'ru_RU',
-                     'Sinhalese': 'si_LK',
-                     'Turkish': 'tr_TR',
-                     'Vietnamese': 'vi_VN',
-                     'Chinese': 'zh_CN'}
+translator = translator.Translator()
 
-lang_code_to_name = {}
-for k, v in lang_name_to_code.items():
-    lang_code_to_name[v] = k
+# Save model to disk
+translator.save_model()
+
+# Initialize Language Code to Name and vice versa mapping dict
+lang_name_to_code = translator.get_lang_name_to_code()
+lang_code_to_name = translator.get_lang_code_to_name()
 
 with st.form(key='LangCodes'):
     c1, c2, c3 = st.columns(3)
     with c1:
-        input_lang_code = st.selectbox('Please Select Input Language', sorted(lang_name_to_code.keys()))
+        input_lang_name = st.selectbox('Please Select Input Language', sorted(lang_name_to_code.keys()))
+        # Convert Input Language Name to Language Code
+        input_lang_code = translator.get_lang_code_from_name(input_lang_name)
 
     with c3:
-        output_lang_code = st.selectbox('Please Select Output Language', sorted(lang_name_to_code.keys()))
+        output_lang_name = st.selectbox('Please Select Output Language', sorted(lang_name_to_code.keys()))
+        # Convert Output Language Name to Language Code
+        output_lang_code = translator.get_lang_code_from_name(output_lang_name)
 
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
     with col4:
         submitButton = st.form_submit_button(label='Submit')
 
-input_text = st.text_input("Input Text", key = "input_text")
+input_text = st.text_input("Input Text", value="", key = "input_text")
 
-st.subheader(f'Your Input : {input_text}, will be translated from {input_lang_code} to {output_lang_code}')
+st.subheader(f'Your Input : {input_text}, will be translated from {input_lang_name} to {output_lang_name}')
+output_text = ' '.join(translator.translate(input_text, input_lang_code, output_lang_code))
+
+
+# Write Translated Text
+st.subheader(f"Translated : {output_text}")
