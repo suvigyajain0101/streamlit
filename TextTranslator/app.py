@@ -1,10 +1,9 @@
 import streamlit as st
 import translator
 
-translator = translator.Translator()
-
-# Save model to disk
-translator.save_model()
+with st.spinner('Initializing Translator Model. This might take few minutes.'):
+    translator = translator.Translator()
+st.success('Done!')
 
 # Initialize Language Code to Name and vice versa mapping dict
 lang_name_to_code = translator.get_lang_name_to_code()
@@ -28,9 +27,11 @@ with st.form(key='LangCodes'):
 
 input_text = st.text_input("Input Text", value="", key = "input_text")
 
-st.subheader(f'Your Input : {input_text}, will be translated from {input_lang_name} to {output_lang_name}')
-output_text = ' '.join(translator.translate(input_text, input_lang_code, output_lang_code))
+if input_text != '':
+    st.subheader(f'Your Input : {input_text}, will be translated from {input_lang_name} to {output_lang_name}')
+    output_text = ' '.join(translator.translate(input_text, input_lang_code, output_lang_code))
 
-
-# Write Translated Text
-st.subheader(f"Translated : {output_text}")
+    # Write Translated Text
+    st.subheader(f"Translated : {output_text}")
+else:
+    st.subheader(f"Waiting for your input!")
